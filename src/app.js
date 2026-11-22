@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('./middlewares/logger');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
+const healthRoutes = require('./routes/health.routes');
 
 const app = express();
 
@@ -10,6 +11,9 @@ app.use(logger);
 
 // Parsea los cuerpos JSON de las peticiones entrantes
 app.use(express.json());
+
+// Rutas de la API
+app.use('/api/v1/health', healthRoutes);
 
 // Captura cualquier ruta no registrada y la delega como error 404
 app.use(notFound);
