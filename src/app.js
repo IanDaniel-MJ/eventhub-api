@@ -3,6 +3,7 @@ const logger = require('./middlewares/logger');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 const healthRoutes = require('./routes/health.routes');
+const speakersRoutes = require('./routes/speakers.routes');
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // Rutas de la API
 app.use('/api/v1/health', healthRoutes);
+app.use('/api/v1/speakers', speakersRoutes);
 
 // Captura cualquier ruta no registrada y la delega como error 404
 app.use(notFound);
