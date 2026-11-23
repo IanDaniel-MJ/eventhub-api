@@ -4,11 +4,14 @@ const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 const healthRoutes = require('./routes/health.routes');
 const speakersRoutes = require('./routes/speakers.routes');
+const { globalLimiter } = require('./middlewares/rateLimiter');
 
 const app = express();
 
 // Registra cada petición entrante con su método, ruta, estado y duración
 app.use(logger);
+// Aplica el límite máximo de peticiones por minuto a todas las rutas de la API
+app.use('/api/v1', globalLimiter);
 
 // Parsea los cuerpos JSON de las peticiones entrantes
 app.use(express.json());
