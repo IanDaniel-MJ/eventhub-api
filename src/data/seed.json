@@ -1,0 +1,134 @@
+{
+  "speakers": [
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000001",
+      "nombre": "Dra. Elena Martínez",
+      "email": "elena.martinez@ipn.mx",
+      "institucion": "UPIITA - IPN",
+      "especialidad": "Sistemas Distribuidos"
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000002",
+      "nombre": "M. en C. Carlos Ramírez",
+      "email": "carlos.ramirez@unam.mx",
+      "institucion": "UNAM",
+      "especialidad": "Seguridad de Redes"
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000003",
+      "nombre": "Ing. Laura Gómez",
+      "email": "laura.gomez@tec.mx",
+      "institucion": "Tecnológico de Monterrey",
+      "especialidad": "Arquitectura en la Nube"
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000004",
+      "nombre": "Dr. Javier Hernández",
+      "email": "javier.hernandez@cinvestav.mx",
+      "institucion": "CINVESTAV",
+      "especialidad": "Inteligencia Artificial"
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000005",
+      "nombre": "Dra. Sofía Morales",
+      "email": "sofia.morales@ipn.mx",
+      "institucion": "ESCOM - IPN",
+      "especialidad": "Desarrollo Web"
+    }
+  ],
+  "events": [
+    {
+      "id": "b1b2c3d4-2222-4000-8000-000000000001",
+      "titulo": "Diseño de APIs RESTful con Node.js",
+      "descripcion": "Taller práctico sobre arquitectura en capas y buenas prácticas REST.",
+      "tipo": "taller",
+      "fecha": "2026-12-10T10:00:00.000Z",
+      "sede": "Laboratorio de Telemática 1",
+      "cupo": 30,
+      "speakerId": "a1b2c3d4-1111-4000-8000-000000000001",
+      "estado": "publicado"
+    },
+    {
+      "id": "b1b2c3d4-2222-4000-8000-000000000002",
+      "titulo": "Ciberseguridad en Infraestructura Cloud",
+      "descripcion": "Conferencia magistral sobre protección de microservicios.",
+      "tipo": "conferencia",
+      "fecha": "2026-12-15T12:00:00.000Z",
+      "sede": "Auditorio Principal",
+      "cupo": 100,
+      "speakerId": "a1b2c3d4-1111-4000-8000-000000000002",
+      "estado": "publicado"
+    },
+    {
+      "id": "b1b2c3d4-2222-4000-8000-000000000003",
+      "titulo": "Contenedores y Orquestación",
+      "descripcion": "Seminario introductorio a despliegues escalables en la nube.",
+      "tipo": "seminario",
+      "fecha": "2027-01-20T16:00:00.000Z",
+      "sede": "Sala de Usos Múltiples",
+      "cupo": 40,
+      "speakerId": "a1b2c3d4-1111-4000-8000-000000000003",
+      "estado": "borrador"
+    },
+    {
+      "id": "b1b2c3d4-2222-4000-8000-000000000004",
+      "titulo": "Redes Neuronales Aplicadas a Señales",
+      "descripcion": "Seminario de investigación sobre procesamiento inteligente.",
+      "tipo": "seminario",
+      "fecha": "2026-10-15T11:00:00.000Z",
+      "sede": "Auditorio B",
+      "cupo": 50,
+      "speakerId": "a1b2c3d4-1111-4000-8000-000000000004",
+      "estado": "cerrado"
+    },
+    {
+      "id": "b1b2c3d4-2222-4000-8000-000000000005",
+      "titulo": "Introducción a Protocolos de Mensajería",
+      "descripcion": "Conferencia sobre RabbitMQ y Kafka en sistemas distribuidos.",
+      "tipo": "conferencia",
+      "fecha": "2026-12-05T09:00:00.000Z",
+      "sede": "Auditorio Principal",
+      "cupo": 80,
+      "speakerId": "a1b2c3d4-1111-4000-8000-000000000001",
+      "estado": "cancelado"
+    }
+  ],
+  "attendees": [
+    {
+      "id": "c1b2c3d4-3333-4000-8000-000000000001",
+      "nombre": "Ana López Pérez",
+      "email": "ana.lopez@alumno.ipn.mx",
+      "matricula": "2023640001",
+      "carrera": "Ingeniería Telemática"
+    },
+    {
+      "id": "c1b2c3d4-3333-4000-8000-000000000002",
+      "nombre": "Luis Fernando Torres",
+      "email": "luis.torres@alumno.ipn.mx",
+      "matricula": "2023640002",
+      "carrera": "Ingeniería Telemática"
+    },
+    {
+      "id": "c1b2c3d4-3333-4000-8000-000000000003",
+      "nombre": "María Fernanda Ruiz",
+      "email": "maria.ruiz@alumno.ipn.mx",
+      "matricula": "2023640003",
+      "carrera": "Ingeniería Mecatrónica"
+    },
+    {
+      "id": "c1b2c3d4-3333-4000-8000-000000000004",
+      "nombre": "Diego Alejandro Cruz",
+      "email": "diego.cruz@alumno.ipn.mx",
+      "matricula": "2023640004",
+      "carrera": "Ingeniería Biónica"
+    },
+    {
+      "id": "c1b2c3d4-3333-4000-8000-000000000005",
+      "nombre": "Valeria Sánchez Díaz",
+      "email": "valeria.sanchez@alumno.ipn.mx",
+      "matricula": "2023640005",
+      "carrera": "Ingeniería en Energía"
+    }
+  ],
+  "registrations": []
+}
