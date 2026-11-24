@@ -47,8 +47,31 @@ const createSpeaker = (speakerData) => {
     return data.createSpeaker(newSpeaker);
 };
 
+// EVH-51: Servicio encargado de eliminar un ponente validando eventos asociados
+const deleteSpeaker = (id) => {
+    // Validación 1: Verificar si el ponente existe
+    const speaker = data.getSpeakerById(id);
+    if (!speaker) {
+        throw new ApiError(404, 'SPEAKER_NOT_FOUND', 'Ponente no encontrado');
+    }
+
+    // Validación 2: Verificar si tiene eventos asociados
+    const speakerEvents = data.getEventsBySpeakerId(id);
+    if (speakerEvents && speakerEvents.length > 0) {
+        throw new ApiError(
+            409,
+            'SPEAKER_HAS_EVENTS',
+            'No se puede eliminar el ponente porque tiene eventos asociados'
+        );
+    }
+
+    // Eliminar el ponente de memoria
+    data.deleteSpeaker(id);
+};
+
 // Exportar las funciones para utilizarlas desde los controladores
 module.exports = {
     getAllSpeakers,
-    createSpeaker
+    createSpeaker,
+    deleteSpeaker
 };
