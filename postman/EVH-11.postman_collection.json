@@ -1,0 +1,196 @@
+{
+  "info": {
+    "_postman_id": "545d50e5-caf8-4068-a157-48c827d615cc",
+    "name": "EVH-11 - Pruebas POST Speakers",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59064001",
+    "_collection_link": "https://go.postman.co/collection/59064001-545d50e5-caf8-4068-a157-48c827d615cc?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Speakers",
+      "item": [
+        {
+          "name": "POST - Registrar ponente (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-21: Pruebas automatizadas del registro de ponentes\r\n\r\n// Comprobar que el servidor responda con 201 Created\r\npm.test(\"Registro exitoso - Codigo 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n// Obtener el JSON de la respuesta del servidor\r\nconst speaker = pm.response.json();\r\n\r\n// Verificar que el ponente tenga un identificador UUID\r\npm.test(\"El ponente tiene un UUID valido\", function () {\r\n    pm.expect(speaker.id).to.match(\r\n        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i\r\n    );\r\n});\r\n\r\n// Comprobar que el servidor devuelva el correo registrado\r\npm.test(\"El correo registrado es correcto\", function () {\r\n    pm.expect(speaker.email).to.eql(\"ana.torres.prueba@ipn.mx\");\r\n});\r\n\r\n// Verificar la cabecera Location\r\npm.test(\"La respuesta incluye la cabecera Location\", function () {\r\n    pm.expect(pm.response.headers.get(\"Location\"))\r\n      .to.eql(\"/api/v1/speakers/\" + speaker.id);\r\n});\r\n\r\n// Guardar el identificador para utilizarlo en otras pruebas\r\nif (pm.response.code === 201 && speaker.id) {\r\n    pm.collectionVariables.set(\"speakerId\", speaker.id);\r\n}\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Ana Torres\",\r\n  \"email\": \"ana.torres.prueba@ipn.mx\",\r\n  \"institucion\": \"IPN\",\r\n  \"especialidad\": \"Sistemas Distribuidos\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Campos obligatorios faltantes (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-21: Prueba de campos obligatorios faltantes\r\n\r\n// Comprobar que el servidor rechace la solicitud con HTTP 400\r\npm.test(\"Codigo HTTP 400 Bad Request\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\n// Obtener la respuesta JSON del servidor\r\nconst response = pm.response.json();\r\n\r\n// Verificar que el error tenga el codigo esperado\r\npm.test(\"Codigo de error VALIDATION_ERROR\", function () {\r\n    pm.expect(response.error.code).to.eql(\"VALIDATION_ERROR\");\r\n});\r\n\r\n// Comprobar que el mensaje indique los campos obligatorios\r\npm.test(\"Mensaje de campos obligatorios\", function () {\r\n    pm.expect(response.error.message).to.include(\r\n        \"Todos los campos son obligatorios\"\r\n    );\r\n});\r\n\r\n// Verificar que la respuesta tenga el formato estandar\r\npm.test(\"Formato de error correcto\", function () {\r\n    pm.expect(response.error.status).to.eql(400);\r\n    pm.expect(response.error).to.have.property(\"timestamp\");\r\n    pm.expect(response.error.timestamp).to.be.a(\"string\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Carlos Perez\",\r\n  \"institucion\": \"IPN\",\r\n  \"especialidad\": \"Redes\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Correo con formato invalido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-21: Prueba de correo con formato invalido\r\n\r\n// Verificar que el servidor responda con 400\r\npm.test(\"Codigo HTTP 400 Bad Request\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\n// Obtener la respuesta del servidor\r\nconst response = pm.response.json();\r\n\r\n// Verificar el codigo del error\r\npm.test(\"Codigo VALIDATION_ERROR\", function () {\r\n    pm.expect(response.error.code).to.eql(\"VALIDATION_ERROR\");\r\n});\r\n\r\n// Comprobar el mensaje de correo invalido\r\npm.test(\"Mensaje de correo invalido\", function () {\r\n    pm.expect(response.error.message).to.eql(\r\n        \"El formato del correo electrónico no es válido\"\r\n    );\r\n});\r\n\r\n// Comprobar la estructura del error\r\npm.test(\"Formato de error correcto\", function () {\r\n    pm.expect(response.error.status).to.eql(400);\r\n    pm.expect(response.error.timestamp).to.be.a(\"string\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Carlos Perez\",\r\n  \"email\": \"carlos.ipn.mx\",\r\n  \"institucion\": \"IPN\",\r\n  \"especialidad\": \"Redes\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Correo duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-21: Validación de correo duplicado\r\n\r\npm.test(\"Codigo HTTP 409 Conflict\", function () {\r\n    pm.response.to.have.status(409);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Codigo DUPLICATE_EMAIL\", function () {\r\n    pm.expect(response.error.code).to.eql(\"DUPLICATE_EMAIL\");\r\n});\r\n\r\npm.test(\"Mensaje de correo duplicado\", function () {\r\n    pm.expect(response.error.message).to.eql(\r\n        \"El correo electrónico ya está registrado\"\r\n    );\r\n});\r\n\r\npm.test(\"Formato de error correcto\", function () {\r\n    pm.expect(response.error.status).to.eql(409);\r\n    pm.expect(response.error.timestamp).to.be.a(\"string\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Elena Martinez\",\r\n  \"email\": \"ELENA.MARTINEZ@IPN.MX\",\r\n  \"institucion\": \"IPN\",\r\n  \"especialidad\": \"Sistemas Distribuidos\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "speakerId",
+      "value": ""
+    }
+  ]
+}
