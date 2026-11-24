@@ -13,6 +13,9 @@ const router = express.Router();
 // Ruta GET creada por CRIS para consultar todos los ponentes
 router.get('/', speakersController.getAllSpeakers);
 
+// EVH-40: Ruta GET para consultar un ponente por ID
+router.get('/:id', speakersController.getSpeakerById);
+
 // EVH-20: Ruta POST para registrar un nuevo ponente
 // Primero valida los datos y después ejecuta el controlador
 router.post('/', validateSpeaker, speakersController.createSpeaker);

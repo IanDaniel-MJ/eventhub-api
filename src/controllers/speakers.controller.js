@@ -11,6 +11,17 @@ const getAllSpeakers = (req, res, next) => {
     }
 };
 
+// EVH-40: Controlador para consultar un ponente por ID
+const getSpeakerById = (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const speaker = speakersService.getSpeakerById(id);
+        return res.status(200).json(speaker);
+    } catch (error) {
+        return next(error);
+    }
+};
+
 // EVH-20: Controlador para registrar un nuevo ponente
 const createSpeaker = (req, res, next) => {
     try {
@@ -51,6 +62,7 @@ const deleteSpeaker = (req, res, next) => {
 // Exportar los controladores para utilizarlos desde las rutas
 module.exports = {
     getAllSpeakers,
+    getSpeakerById,
     createSpeaker,
     deleteSpeaker
 };
