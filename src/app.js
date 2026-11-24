@@ -6,6 +6,7 @@ const healthRoutes = require('./routes/health.routes');
 const speakersRoutes = require('./routes/speakers.routes');
 const { globalLimiter } = require('./middlewares/rateLimiter');
 const authRoutes = require('./routes/auth.routes');
+const authenticate = require('./middlewares/authenticate');
 
 const app = express();
 
@@ -19,7 +20,8 @@ app.use(express.json());
 
 // Rutas de la API
 app.use('/api/v1/health', healthRoutes);
-app.use('/api/v1/speakers', speakersRoutes);
+// Protege todos los endpoints de ponentes exigiendo un JWT de acceso válido
+app.use('/api/v1/speakers', authenticate, speakersRoutes);
 
 // Monta las rutas de registro y autenticación en dos pasos
 app.use('/api/v1/auth', authRoutes);

@@ -24,7 +24,18 @@ const login = async (req, res, next) => {
   }
 };
 
+// Procesa la verificación 2FA (Paso 2) y entrega el accessToken definitivo
+const verify2FA = async (req, res, next) => {
+  try {
+    const result = await authService.verify2FA(req.body);
+    return res.status(200).json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   register,
-  login
+  login,
+  verify2FA
 };
