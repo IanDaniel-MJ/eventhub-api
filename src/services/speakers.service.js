@@ -12,6 +12,17 @@ const getAllSpeakers = () => {
     return data.getAllSpeakers();
 };
 
+// EVH-39: Servicio encargado de consultar un ponente por ID
+const getSpeakerById = (id) => {
+    const speaker = data.getSpeakerById(id);
+
+    if (!speaker) {
+        throw new ApiError(404, 'SPEAKER_NOT_FOUND', 'Ponente no encontrado');
+    }
+
+    return speaker;
+};
+
 // EVH-19: Servicio encargado de registrar un nuevo ponente
 const createSpeaker = (speakerData) => {
 
@@ -72,6 +83,7 @@ const deleteSpeaker = (id) => {
 // Exportar las funciones para utilizarlas desde los controladores
 module.exports = {
     getAllSpeakers,
+    getSpeakerById,
     createSpeaker,
     deleteSpeaker
 };
