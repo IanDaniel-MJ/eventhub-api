@@ -37,8 +37,20 @@ const createSpeaker = (req, res, next) => {
     }
 };
 
+// EVH-53: Controlador para eliminar un ponente por ID
+const deleteSpeaker = (req, res, next) => {
+    try {
+        const { id } = req.params;
+        speakersService.deleteSpeaker(id);
+        return res.status(204).send();
+    } catch (error) {
+        return next(error);
+    }
+};
+
 // Exportar los controladores para utilizarlos desde las rutas
 module.exports = {
     getAllSpeakers,
-    createSpeaker
+    createSpeaker,
+    deleteSpeaker
 };

@@ -17,5 +17,8 @@ router.get('/', speakersController.getAllSpeakers);
 // Primero valida los datos y después ejecuta el controlador
 router.post('/', validateSpeaker, speakersController.createSpeaker);
 
+// EVH-53: Eliminar un ponente por ID
+router.delete('/:id', speakersController.deleteSpeaker);
+
 // Exportar el enrutador para utilizarlo desde app.js
 module.exports = router;
