@@ -1,0 +1,111 @@
+{
+  "info": {
+    "_postman_id": "2d2363ed-6d68-4ce8-853e-b5fae34e897a",
+    "name": "EVH-51 - Pruebas DELETE Speakers",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60123953",
+    "_collection_link": "https://go.postman.co/collection/60123953-2d2363ed-6d68-4ce8-853e-b5fae34e897a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "DELETE - Ponente con eventos asociados (409)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 409 Conflict\", function () {\r\n    pm.response.to.have.status(409);\r\n});\r\n\r\npm.test(\"Error code is SPEAKER_HAS_EVENTS\", function () {\r\n    const json = pm.response.json();\r\n    pm.expect(json).to.have.property(\"error\");\r\n    pm.expect(json.error.status).to.eql(409);\r\n    pm.expect(json.error.code).to.eql(\"SPEAKER_HAS_EVENTS\");\r\n    pm.expect(json.error).to.have.property(\"message\");\r\n    pm.expect(json.error).to.have.property(\"timestamp\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/speakers/a1b2c3d4-1111-4000-8000-000000000001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "speakers",
+            "a1b2c3d4-1111-4000-8000-000000000001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE - Eliminar ponente exitoso (204)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 204 No Content\", function () {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"Response body is empty\", function () {\r\n    pm.expect(pm.response.text()).to.eql(\"\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/speakers/f86ff046-9c1b-452c-8f32-b9dc51127187",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "speakers",
+            "f86ff046-9c1b-452c-8f32-b9dc51127187"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE - Ponente no encontrado (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 404 Not Found\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error code is SPEAKER_NOT_FOUND\", function () {\r\n    const json = pm.response.json();\r\n    pm.expect(json).to.have.property(\"error\");\r\n    pm.expect(json.error.status).to.eql(404);\r\n    pm.expect(json.error.code).to.eql(\"SPEAKER_NOT_FOUND\");\r\n    pm.expect(json.error).to.have.property(\"message\");\r\n    pm.expect(json.error).to.have.property(\"timestamp\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/speakers/f86ff046-9c1b-452c-8f32-b9dc51127187",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "speakers",
+            "f86ff046-9c1b-452c-8f32-b9dc51127187"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
