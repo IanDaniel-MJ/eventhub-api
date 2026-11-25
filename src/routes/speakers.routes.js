@@ -10,12 +10,51 @@ const validateSpeaker = require('../middlewares/validateSpeaker');
 // Crear el enrutador de Express
 const router = express.Router();
 
-// Ruta GET creada por CRIS para consultar todos los ponentes
+
+// ======================================================
+// GET: CONSULTAR TODOS LOS PONENTES
+// Ruta creada por CRIS
+// ======================================================
+
 router.get('/', speakersController.getAllSpeakers);
 
-// EVH-20: Ruta POST para registrar un nuevo ponente
-// Primero valida los datos y después ejecuta el controlador
+
+// ======================================================
+// EVH-40: CONSULTAR UN PONENTE POR ID
+// ======================================================
+
+router.get('/:id', speakersController.getSpeakerById);
+
+
+// ======================================================
+// EVH-20: REGISTRAR UN NUEVO PONENTE (POST)
+// ======================================================
+
+// Primero valida los campos y después ejecuta el controlador
 router.post('/', validateSpeaker, speakersController.createSpeaker);
 
-// Exportar el enrutador para utilizarlo desde app.js
+
+// ======================================================
+// EVH-49: REEMPLAZAR LOS DATOS DE UN PONENTE (PUT)
+// ======================================================
+
+// La ruta recibe el ID del ponente mediante el parámetro :id
+// validateSpeaker comprueba los cuatro campos obligatorios
+// y que el formato del correo electrónico sea válido
+// Si la validación es correcta, ejecuta updateSpeaker
+router.put('/:id', validateSpeaker, speakersController.updateSpeaker);
+
+
+// ======================================================
+// EVH-53: ELIMINAR UN PONENTE POR ID (DELETE)
+// ======================================================
+
+router.delete('/:id', speakersController.deleteSpeaker);
+
+
+// ======================================================
+// EXPORTAR EL ENRUTADOR
+// ======================================================
+
+// Permite utilizar las rutas del módulo desde app.js
 module.exports = router;

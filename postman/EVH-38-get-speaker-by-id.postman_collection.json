@@ -1,0 +1,117 @@
+{
+  "info": {
+    "_postman_id": "e838c0de-3838-4000-8000-000000000038",
+    "name": "EVH-38 - Pruebas GET Speaker por ID",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET - Consultar ponente por ID (200 OK)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código de estado 200 OK\", () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Devuelve los datos completos del ponente\", () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property(\"id\");",
+              "    pm.expect(body).to.have.property(\"nombre\");",
+              "    pm.expect(body).to.have.property(\"email\");",
+              "    pm.expect(body).to.have.property(\"institucion\");",
+              "    pm.expect(body).to.have.property(\"especialidad\");",
+              "});",
+              "",
+              "pm.test(\"Tiempo de respuesta < 300 ms\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(300);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/speakers/{{speakerId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "speakers",
+            "{{speakerId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Ponente no encontrado (404 Not Found)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código de estado 404 Not Found\", () => {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Devuelve error estándar SPEAKER_NOT_FOUND\", () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property(\"error\");",
+              "    pm.expect(body.error).to.have.property(\"status\", 404);",
+              "    pm.expect(body.error).to.have.property(\"code\", \"SPEAKER_NOT_FOUND\");",
+              "    pm.expect(body.error).to.have.property(\"message\");",
+              "    pm.expect(body.error).to.have.property(\"timestamp\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/speakers/00000000-0000-0000-0000-000000000000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "speakers",
+            "00000000-0000-0000-0000-000000000000"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "speakerId",
+      "value": "a1b2c3d4-1111-4000-8000-000000000001"
+    }
+  ]
+}
