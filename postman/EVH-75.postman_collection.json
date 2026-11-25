@@ -1,0 +1,796 @@
+{
+  "info": {
+    "_postman_id": "918becef-a088-48b2-8e2c-0e821e5cdc20",
+    "name": "EVH-75 - Sprint 1 Consolidado",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59064001",
+    "_collection_link": "https://go.postman.co/collection/59064001-918becef-a088-48b2-8e2c-0e821e5cdc20?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST - Registrar usuario de prueba",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\nconst correoNuevo =\r\n    \"evh75.\" +\r\n    pm.variables.replaceIn(\"{{$guid}}\") +\r\n    \"@example.com\";\r\n\r\npm.collectionVariables.set(\"testAuthEmail\", correoNuevo);\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"nombre\": \"Usuario Prueba EVH47\",\r\n  \"email\": \"{{testAuthEmail}}\",\r\n  \"password\": \"{{testPassword}}\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Iniciar sesión (Login)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"EVH-75: Login responde HTTP 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"EVH-75: Login genera datos para 2FA\", function () {\r\n    pm.expect(response.tempToken).to.be.a(\"string\");\r\n    pm.expect(response.devCode).to.exist;\r\n});\r\n\r\nif (pm.response.code === 200 &&\r\n    response.tempToken &&\r\n    response.devCode !== undefined) {\r\n\r\n    pm.collectionVariables.set(\r\n        \"evh75TempToken\",\r\n        response.tempToken\r\n    );\r\n\r\n    pm.collectionVariables.set(\r\n        \"evh75DevCode\",\r\n        String(response.devCode)\r\n    );\r\n\r\n    console.log(\"Datos de 2FA actualizados\");\r\n}\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"email\": \"{{testAuthEmail}}\",\r\n  \"password\": \"{{testPassword}}\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Verificar código 2FA",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\nconst response = pm.response.json();\r\n\r\npm.test(\"EVH-75: Verify 2FA responde HTTP 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"EVH-75: Genera un accessToken\", function () {\r\n    pm.expect(response.accessToken).to.be.a(\"string\");\r\n    pm.expect(response.accessToken).to.not.be.empty;\r\n});\r\n\r\nif (pm.response.code === 200 && response.accessToken) {\r\n    pm.collectionVariables.set(\"accessToken\", response.accessToken);\r\n    console.log(\"Token JWT guardado correctamente\");\r\n} else {\r\n    pm.collectionVariables.unset(\"accessToken\");\r\n    console.log(\"La verificacion 2FA no fue exitosa\");\r\n}\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"tempToken\": \"{{evh75TempToken}}\",\r\n  \"code\": \"{{evh75DevCode}}\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/auth/verify-2fa",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-2fa"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET - Estado de la API (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"EVH-75: Health responde HTTP 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"EVH-75: El estado de la API es ok\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.status).to.eql(\"ok\");\r\n});\r\n\r\npm.test(\"EVH-75: El uptime es un numero valido\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(Number.isInteger(response.uptime)).to.eql(true);\r\n    pm.expect(response.uptime).to.be.at.least(0);\r\n});\r\n\r\npm.test(\"EVH-75: Devuelve la version de la API\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.version).to.be.a(\"string\");\r\n    pm.expect(response.version).to.not.be.empty;\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Speakers",
+      "item": [
+        {
+          "name": "GET - Consultar todos los ponentes (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"EVH-75: Responde HTTP 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"EVH-75: Devuelve una lista de ponentes\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"EVH-75: Los ponentes tienen los campos requeridos\", function () {\r\n    const response = pm.response.json();\r\n\r\n    response.forEach(function (speaker) {\r\n        pm.expect(speaker).to.have.property(\"id\");\r\n        pm.expect(speaker).to.have.property(\"nombre\");\r\n        pm.expect(speaker).to.have.property(\"email\");\r\n        pm.expect(speaker).to.have.property(\"institucion\");\r\n        pm.expect(speaker).to.have.property(\"especialidad\");\r\n    });\r\n});\r\n\r\npm.test(\"EVH-75: Devuelve una respuesta JSON\", function () {\r\n    const contentType = pm.response.headers.get(\"Content-Type\");\r\n\r\n    pm.expect(contentType).to.include(\"application/json\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Consultar ponente por ID (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 200 OK\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Devuelve los datos completos del ponente\", () => {\n    const body = pm.response.json();\n    pm.expect(body).to.have.property(\"id\");\n    pm.expect(body).to.have.property(\"nombre\");\n    pm.expect(body).to.have.property(\"email\");\n    pm.expect(body).to.have.property(\"institucion\");\n    pm.expect(body).to.have.property(\"especialidad\");\n});\n\npm.test(\"Tiempo de respuesta < 300 ms\", () => {\n    pm.expect(pm.response.responseTime).to.be.below(300);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/speakers/{{speakerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "{{speakerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Ponente no encontrado (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código de estado 404 Not Found\", () => {\n    pm.response.to.have.status(404);\n});\n\npm.test(\"Devuelve error estándar SPEAKER_NOT_FOUND\", () => {\n    const body = pm.response.json();\n    pm.expect(body).to.have.property(\"error\");\n    pm.expect(body.error).to.have.property(\"status\", 404);\n    pm.expect(body.error).to.have.property(\"code\", \"SPEAKER_NOT_FOUND\");\n    pm.expect(body.error).to.have.property(\"message\");\n    pm.expect(body.error).to.have.property(\"timestamp\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/speakers/00000000-0000-0000-0000-000000000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Registrar ponente (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n// EVH-75: Pruebas del registro de ponentes\r\n\r\n// Comprobar la respuesta HTTP 201\r\npm.test(\"Registro exitoso - Codigo 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n// Obtener los datos devueltos por la API\r\nconst speaker = pm.response.json();\r\n\r\n// Verificar que se genere un UUID válido\r\npm.test(\"El ponente tiene un UUID valido\", function () {\r\n    pm.expect(speaker.id).to.match(\r\n        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i\r\n    );\r\n});\r\n\r\n// Comprobar que se registró el correo generado\r\npm.test(\"El correo registrado es correcto\", function () {\r\n    pm.expect(speaker.email).to.eql(\r\n        pm.variables.get(\"newSpeakerEmail\")\r\n    );\r\n});\r\n\r\n// Verificar la cabecera Location\r\npm.test(\"La respuesta incluye la cabecera Location\", function () {\r\n    pm.expect(pm.response.headers.get(\"Location\"))\r\n      .to.eql(\"/api/v1/speakers/\" + speaker.id);\r\n});\r\n\r\n// Guardar el nuevo ID sin modificar speakerId\r\nif (pm.response.code === 201 && speaker.id) {\r\n    pm.collectionVariables.set(\"createdSpeakerId\", speaker.id);\r\n}\r\n"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-75: Generar un correo diferente en cada ejecución\r\n\r\nconst nuevoCorreo =\r\n    \"ana.torres.\" +\r\n    pm.variables.replaceIn(\"{{$guid}}\") +\r\n    \"@ipn.mx\";\r\n\r\n// Guardar el correo temporal para esta petición\r\npm.variables.set(\"newSpeakerEmail\", nuevoCorreo);\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"nombre\": \"Ana Torres\",\r\n  \"email\": \"{{newSpeakerEmail}}\",\r\n  \"institucion\": \"IPN\",\r\n  \"especialidad\": \"Sistemas Distribuidos\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Campos obligatorios faltantes (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-21: Prueba de campos obligatorios faltantes\r\n\r\n// Comprobar que el servidor rechace la solicitud con HTTP 400\r\npm.test(\"Codigo HTTP 400 Bad Request\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\n// Obtener la respuesta JSON del servidor\r\nconst response = pm.response.json();\r\n\r\n// Verificar que el error tenga el codigo esperado\r\npm.test(\"Codigo de error VALIDATION_ERROR\", function () {\r\n    pm.expect(response.error.code).to.eql(\"VALIDATION_ERROR\");\r\n});\r\n\r\n// Comprobar que el mensaje indique los campos obligatorios\r\npm.test(\"Mensaje de campos obligatorios\", function () {\r\n    pm.expect(response.error.message).to.include(\r\n        \"Todos los campos son obligatorios\"\r\n    );\r\n});\r\n\r\n// Verificar que la respuesta tenga el formato estandar\r\npm.test(\"Formato de error correcto\", function () {\r\n    pm.expect(response.error.status).to.eql(400);\r\n    pm.expect(response.error).to.have.property(\"timestamp\");\r\n    pm.expect(response.error.timestamp).to.be.a(\"string\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Carlos Perez\",\r\n  \"institucion\": \"IPN\",\r\n  \"especialidad\": \"Redes\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Correo con formato invalido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-21: Prueba de correo con formato invalido\r\n\r\n// Verificar que el servidor responda con 400\r\npm.test(\"Codigo HTTP 400 Bad Request\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\n// Obtener la respuesta del servidor\r\nconst response = pm.response.json();\r\n\r\n// Verificar el codigo del error\r\npm.test(\"Codigo VALIDATION_ERROR\", function () {\r\n    pm.expect(response.error.code).to.eql(\"VALIDATION_ERROR\");\r\n});\r\n\r\n// Comprobar el mensaje de correo invalido\r\npm.test(\"Mensaje de correo invalido\", function () {\r\n    pm.expect(response.error.message).to.eql(\r\n        \"El formato del correo electrónico no es válido\"\r\n    );\r\n});\r\n\r\n// Comprobar la estructura del error\r\npm.test(\"Formato de error correcto\", function () {\r\n    pm.expect(response.error.status).to.eql(400);\r\n    pm.expect(response.error.timestamp).to.be.a(\"string\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Carlos Perez\",\r\n  \"email\": \"carlos.ipn.mx\",\r\n  \"institucion\": \"IPN\",\r\n  \"especialidad\": \"Redes\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Correo duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n // EVH-21: Validación de correo duplicado\r\n\r\npm.test(\"Codigo HTTP 409 Conflict\", function () {\r\n    pm.response.to.have.status(409);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Codigo DUPLICATE_EMAIL\", function () {\r\n    pm.expect(response.error.code).to.eql(\"DUPLICATE_EMAIL\");\r\n});\r\n\r\npm.test(\"Mensaje de correo duplicado\", function () {\r\n    pm.expect(response.error.message).to.eql(\r\n        \"El correo electrónico ya está registrado\"\r\n    );\r\n});\r\n\r\npm.test(\"Formato de error correcto\", function () {\r\n    pm.expect(response.error.status).to.eql(409);\r\n    pm.expect(response.error.timestamp).to.be.a(\"string\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"nombre\": \"Carlos Ramirez\",\r\n  \"email\": \"CARLOS.RAMIREZ@UNAM.MX\",\r\n  \"institucion\": \"UNAM\",\r\n  \"especialidad\": \"Seguridad de Redes\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Actualizar ponente existente (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"EVH-50: Responde HTTP 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"EVH-50: Conserva el ID original\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.id).to.eql(\r\n        \"a1b2c3d4-1111-4000-8000-000000000001\"\r\n    );\r\n});\r\n\r\npm.test(\"EVH-50: Actualiza correctamente los cuatro campos\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.nombre).to.eql(\"Elena Martinez Actualizada\");\r\n    pm.expect(response.email).to.eql(\"elena.actualizada@ipn.mx\");\r\n    pm.expect(response.institucion).to.eql(\"UPIITA\");\r\n    pm.expect(response.especialidad).to.eql(\"Robotica\");\r\n});\r\n\r\n\r\npm.test(\"EVH-50: Devuelve una respuesta JSON\", function () {\r\n    const contentType = pm.response.headers.get(\"Content-Type\");\r\n\r\n    pm.expect(contentType).to.include(\"application/json\");\r\n});\r\n\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Elena Martinez Actualizada\",\r\n  \"email\": \"elena.actualizada@ipn.mx\",\r\n  \"institucion\": \"UPIITA\",\r\n  \"especialidad\": \"Robotica\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers/a1b2c3d4-1111-4000-8000-000000000001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "a1b2c3d4-1111-4000-8000-000000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Campos obligatorios faltantes (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n// EVH-50: Validar campos obligatorios faltantes\r\n\r\npm.test(\"EVH-50: Responde HTTP 400 Bad Request\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"EVH-50: Devuelve VALIDATION_ERROR\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error.code).to.eql(\"VALIDATION_ERROR\");\r\n});\r\n\r\npm.test(\"EVH-50: Devuelve un mensaje de error\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error.message).to.be.a(\"string\");\r\n    pm.expect(response.error.message).to.not.be.empty;\r\n});\r\n\r\npm.test(\"EVH-50: Devuelve una respuesta JSON\", function () {\r\n    const contentType = pm.response.headers.get(\"Content-Type\");\r\n    pm.expect(contentType).to.include(\"application/json\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"nombre\": \"Elena Martinez Actualizada\",\r\n  \"institucion\": \"UPIITA\",\r\n  \"especialidad\": \"Robotica\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers/a1b2c3d4-1111-4000-8000-000000000001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "a1b2c3d4-1111-4000-8000-000000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Ponente inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n// EVH-75: Validar ponente inexistente\r\n\r\npm.test(\"EVH-50: Responde HTTP 404 Not Found\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"EVH-50: Devuelve SPEAKER_NOT_FOUND\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error.code).to.eql(\"SPEAKER_NOT_FOUND\");\r\n});\r\n\r\npm.test(\"EVH-50: Indica que el ponente no existe\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error.message).to.eql(\"Ponente no encontrado\");\r\n});\r\n\r\npm.test(\"EVH-50: Devuelve una respuesta JSON\", function () {\r\n    const contentType = pm.response.headers.get(\"Content-Type\");\r\n    pm.expect(contentType).to.include(\"application/json\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"nombre\": \"Ponente de Prueba\",\r\n  \"email\": \"ponente.inexistente@example.com\",\r\n  \"institucion\": \"ESCOM\",\r\n  \"especialidad\": \"Sistemas Distribuidos\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers/ponente-inexistente-999",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "ponente-inexistente-999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Correo duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n// EVH-75: Validar correo duplicado en PUT\r\n\r\npm.test(\"EVH-50: Responde HTTP 409 Conflict\", function () {\r\n    pm.response.to.have.status(409);\r\n});\r\n\r\npm.test(\"EVH-50: Devuelve DUPLICATE_EMAIL\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error.code).to.eql(\"DUPLICATE_EMAIL\");\r\n});\r\n\r\npm.test(\"EVH-50: Indica que el correo ya esta registrado\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.error.message).to.eql(\r\n        \"El correo electrónico ya está registrado\"\r\n    );\r\n});\r\n\r\npm.test(\"EVH-50: Devuelve una respuesta JSON\", function () {\r\n    const contentType = pm.response.headers.get(\"Content-Type\");\r\n\r\n    pm.expect(contentType).to.include(\"application/json\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"nombre\": \"Elena Martinez Actualizada\",\r\n  \"email\": \"CARLOS.RAMIREZ@UNAM.MX\",\r\n  \"institucion\": \"UPIITA\",\r\n  \"especialidad\": \"Robotica\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers/a1b2c3d4-1111-4000-8000-000000000001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "a1b2c3d4-1111-4000-8000-000000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Ponente con eventos asociados (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"Status code is 409 Conflict\", function () {\r\n    pm.response.to.have.status(409);\r\n});\r\n\r\npm.test(\"Error code is SPEAKER_HAS_EVENTS\", function () {\r\n    const json = pm.response.json();\r\n\r\n    pm.expect(json).to.have.property(\"error\");\r\n    pm.expect(json.error.status).to.eql(409);\r\n    pm.expect(json.error.code).to.eql(\"SPEAKER_HAS_EVENTS\");\r\n    pm.expect(json.error).to.have.property(\"message\");\r\n    pm.expect(json.error).to.have.property(\"timestamp\");\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/speakers/a1b2c3d4-1111-4000-8000-000000000001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "a1b2c3d4-1111-4000-8000-000000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Eliminar ponente exitoso (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 204 No Content\", function () {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"Response body is empty\", function () {\r\n    pm.expect(pm.response.text()).to.eql(\"\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/speakers/{{createdSpeakerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "{{createdSpeakerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Ponente no encontrado (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error code is SPEAKER_NOT_FOUND\", function () {\r\n    const json = pm.response.json();\r\n    pm.expect(json).to.have.property(\"error\");\r\n    pm.expect(json.error.status).to.eql(404);\r\n    pm.expect(json.error.code).to.eql(\"SPEAKER_NOT_FOUND\");\r\n    pm.expect(json.error).to.have.property(\"message\");\r\n    pm.expect(json.error).to.have.property(\"timestamp\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/speakers/00000000-0000-0000-0000-000000000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "speakers",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "testPassword",
+      "value": ""
+    },
+    {
+      "key": "tempToken",
+      "secret": true
+    },
+    {
+      "key": "devCode",
+      "value": ""
+    },
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "speakerId",
+      "value": ""
+    },
+    {
+      "key": "createdSpeakerId",
+      "value": ""
+    },
+    {
+      "key": "testAuthEmail",
+      "value": ""
+    },
+    {
+      "key": "evh75TempToken",
+      "secret": true
+    },
+    {
+      "key": "evh75DevCode",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "secret": true
+    }
+  ]
+}
