@@ -6,7 +6,7 @@ const register = async (req, res, next) => {
     const user = await authService.register(req.body);
 
     return res.status(201).json({
-      message: 'Usuario registrado exitosamente.',
+      message: req.t('auth.registerSuccess'),
       data: user
     });
   } catch (error) {
@@ -18,7 +18,11 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const result = await authService.login(req.body);
-    return res.status(200).json(result);
+
+    return res.status(200).json({
+      ...result,
+      message: req.t('auth.loginSuccess')
+    });
   } catch (error) {
     return next(error);
   }
@@ -28,7 +32,11 @@ const login = async (req, res, next) => {
 const verify2FA = async (req, res, next) => {
   try {
     const result = await authService.verify2FA(req.body);
-    return res.status(200).json(result);
+
+    return res.status(200).json({
+      ...result,
+      message: req.t('auth.verify2faSuccess')
+    });
   } catch (error) {
     return next(error);
   }
