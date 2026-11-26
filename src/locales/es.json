@@ -1,0 +1,76 @@
+{
+  "health": {
+    "ok": "EventHub API operativa."
+  },
+  "auth": {
+    "registerSuccess": "Usuario registrado exitosamente.",
+    "loginSuccess": "Credenciales válidas. Verifica el código 2FA para obtener tu token de acceso.",
+    "verify2faSuccess": "Autenticación en dos pasos completada exitosamente."
+  },
+  "events": {
+    "statusUpdated": "El estado del evento se actualizó correctamente a '{{estado}}'."
+  },
+  "errors": {
+    "INTERNAL_SERVER_ERROR": "Ocurrió un error interno en el servidor.",
+    "VALIDATION_ERROR": "Error de validación en los datos enviados.",
+    "INVALID_JSON": "El cuerpo de la petición contiene un JSON inválido.",
+    "ROUTE_NOT_FOUND": "No se encontró la ruta {{method}} {{path}}.",
+    "RATE_LIMIT_EXCEEDED": "Has excedido el límite de peticiones por minuto. Intenta nuevamente más tarde.",
+    "RATE_LIMIT_GLOBAL": "Has excedido el límite de peticiones por minuto. Intenta nuevamente más tarde.",
+    "RATE_LIMIT_AUTH": "Demasiados intentos de autenticación. Espera un minuto antes de volver a intentarlo.",
+    "TOKEN_MISSING": "Se requiere un token de acceso en la cabecera Authorization (Bearer).",
+    "TOKEN_EMPTY": "El token de acceso no puede estar vacío.",
+    "TOKEN_EXPIRED": "El token de acceso ha expirado. Inicia sesión nuevamente.",
+    "TOKEN_INVALID": "El token de acceso no es válido.",
+    "TOKEN_NOT_ACCESS": "El token proporcionado no es un token de acceso válido. Completa la verificación 2FA.",
+    "TEMP_TOKEN_EXPIRED": "El token temporal ha expirado. Inicia sesión nuevamente.",
+    "TEMP_TOKEN_INVALID": "El token temporal no es válido.",
+    "TOKEN_NOT_2FA_PENDING": "El token proporcionado no corresponde a un inicio de sesión pendiente de 2FA.",
+    "TOKEN_USER_NOT_FOUND": "El usuario asociado al token no existe.",
+    "USER_ALREADY_EXISTS": "Ya existe una cuenta registrada con ese correo electrónico.",
+    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
+    "INVALID_2FA_CODE": "El código 2FA es incorrecto.",
+    "INVALID_2FA_CODE_OR_USED": "El código 2FA es inválido o ya fue utilizado.",
+    "EXPIRED_2FA_CODE": "El código 2FA ha expirado. Inicia sesión nuevamente para generar uno nuevo.",
+    "SPEAKER_NOT_FOUND": "Ponente no encontrado.",
+    "DUPLICATE_EMAIL": "El correo electrónico ya está registrado.",
+    "SPEAKER_HAS_EVENTS": "No se puede eliminar el ponente porque tiene eventos asociados.",
+    "EVENT_NOT_FOUND": "Evento no encontrado.",
+    "EVENT_NOT_EDITABLE": "No se puede editar un evento que se encuentra cerrado o cancelado.",
+    "EVENT_NOT_DELETABLE": "Solo se pueden eliminar eventos que se encuentren en estado borrador.",
+    "INVALID_STATUS_TRANSITION": "La transición de estado solicitada no está permitida para este evento.",
+    "ATTENDEE_NOT_FOUND": "Asistente no encontrado.",
+    "DUPLICATE_MATRICULA": "La matrícula ya está registrada."
+  },
+  "validation": {
+    "auth": {
+      "nombreRequired": "El campo nombre es obligatorio.",
+      "emailInvalid": "El campo email debe tener un formato válido.",
+      "passwordMinLength": "El campo password es obligatorio y debe tener al menos 6 caracteres.",
+      "loginEmailInvalid": "Debes proporcionar un email válido.",
+      "passwordRequired": "El campo password es obligatorio.",
+      "tempTokenRequired": "El campo tempToken es obligatorio.",
+      "otpInvalid": "El campo code es obligatorio y debe ser un código numérico de 6 dígitos."
+    },
+    "speaker": {
+      "fieldsRequired": "Todos los campos son obligatorios: nombre, email, institucion y especialidad.",
+      "emailInvalid": "El formato del correo electrónico no es válido."
+    },
+    "attendee": {
+      "fieldsRequired": "Todos los campos son obligatorios: nombre, email, matricula y carrera.",
+      "emailInvalid": "El formato del correo electrónico no es válido."
+    },
+    "event": {
+      "fieldsRequired": "Todos los campos son obligatorios: titulo, descripcion, tipo, fecha, sede, cupo y speakerId.",
+      "invalidType": "El campo tipo debe ser uno de: conferencia, taller o seminario.",
+      "invalidCapacity": "El campo cupo debe ser un número entero mayor a 0.",
+      "invalidDate": "El campo fecha debe ser una fecha válida en formato ISO 8601.",
+      "pastDate": "La fecha del evento debe ser posterior a la fecha actual.",
+      "emptyPatch": "Debes enviar al menos un campo válido para actualizar el evento.",
+      "statusNotAllowedInPatch": "El estado del evento no puede modificarse aquí; utiliza PATCH /api/v1/events/:id/status.",
+      "invalidStatus": "El campo estado debe ser uno de: borrador, publicado, cerrado o cancelado.",
+      "invalidDateRange": "El parámetro 'desde' no puede ser posterior a 'hasta'.",
+      "invalidPagination": "Los parámetros page y limit deben ser números enteros positivos."
+    }
+  }
+}
