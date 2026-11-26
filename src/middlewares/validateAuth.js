@@ -9,13 +9,20 @@ const validateRegister = (req, res, next) => {
 
   if (!nombre || typeof nombre !== 'string' || !nombre.trim()) {
     return next(
-      new ApiError(400, 'VALIDATION_ERROR', 'El campo nombre es obligatorio.')
+      new ApiError(400, 'VALIDATION_ERROR', 'El campo nombre es obligatorio.', {
+        messageKey: 'validation.auth.nombreRequired'
+      })
     );
   }
 
   if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
     return next(
-      new ApiError(400, 'VALIDATION_ERROR', 'El campo email debe tener un formato válido.')
+      new ApiError(
+        400,
+        'VALIDATION_ERROR',
+        'El campo email debe tener un formato válido.',
+        { messageKey: 'validation.auth.emailInvalid' }
+      )
     );
   }
 
@@ -24,7 +31,8 @@ const validateRegister = (req, res, next) => {
       new ApiError(
         400,
         'VALIDATION_ERROR',
-        'El campo password es obligatorio y debe tener al menos 6 caracteres.'
+        'El campo password es obligatorio y debe tener al menos 6 caracteres.',
+        { messageKey: 'validation.auth.passwordMinLength' }
       )
     );
   }
@@ -38,13 +46,17 @@ const validateLogin = (req, res, next) => {
 
   if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
     return next(
-      new ApiError(400, 'VALIDATION_ERROR', 'Debes proporcionar un email válido.')
+      new ApiError(400, 'VALIDATION_ERROR', 'Debes proporcionar un email válido.', {
+        messageKey: 'validation.auth.loginEmailInvalid'
+      })
     );
   }
 
   if (!password || typeof password !== 'string' || !password.trim()) {
     return next(
-      new ApiError(400, 'VALIDATION_ERROR', 'El campo password es obligatorio.')
+      new ApiError(400, 'VALIDATION_ERROR', 'El campo password es obligatorio.', {
+        messageKey: 'validation.auth.passwordRequired'
+      })
     );
   }
 
@@ -57,7 +69,9 @@ const validateVerify2FA = (req, res, next) => {
 
   if (!tempToken || typeof tempToken !== 'string' || !tempToken.trim()) {
     return next(
-      new ApiError(400, 'VALIDATION_ERROR', 'El campo tempToken es obligatorio.')
+      new ApiError(400, 'VALIDATION_ERROR', 'El campo tempToken es obligatorio.', {
+        messageKey: 'validation.auth.tempTokenRequired'
+      })
     );
   }
 
@@ -68,7 +82,8 @@ const validateVerify2FA = (req, res, next) => {
       new ApiError(
         400,
         'VALIDATION_ERROR',
-        'El campo code es obligatorio y debe ser un código numérico de 6 dígitos.'
+        'El campo code es obligatorio y debe ser un código numérico de 6 dígitos.',
+        { messageKey: 'validation.auth.otpInvalid' }
       )
     );
   }

@@ -27,7 +27,8 @@ const register = async ({ nombre, email, password }) => {
     throw new ApiError(
       409,
       'USER_ALREADY_EXISTS',
-      'Ya existe una cuenta registrada con ese correo electrónico.'
+      'Ya existe una cuenta registrada con ese correo electrónico.',
+      { messageKey: 'errors.USER_ALREADY_EXISTS' }
     );
   }
 
@@ -60,13 +61,17 @@ const login = async ({ email, password }) => {
   const user = authStore.findUserByEmail(normalizedEmail);
 
   if (!user) {
-    throw new ApiError(401, 'INVALID_CREDENTIALS', 'Correo o contraseña incorrectos.');
+    throw new ApiError(401, 'INVALID_CREDENTIALS', 'Correo o contraseña incorrectos.', {
+      messageKey: 'errors.INVALID_CREDENTIALS'
+    });
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
   if (!isPasswordValid) {
-    throw new ApiError(401, 'INVALID_CREDENTIALS', 'Correo o contraseña incorrectos.');
+    throw new ApiError(401, 'INVALID_CREDENTIALS', 'Correo o contraseña incorrectos.', {
+      messageKey: 'errors.INVALID_CREDENTIALS'
+    });
   }
 
   // Genera código numérico de 6 dígitos (100000 a 999999) y calcula su expiración
@@ -113,11 +118,14 @@ const verify2FA = async ({ tempToken, code }) => {
       throw new ApiError(
         401,
         'TOKEN_EXPIRED',
-        'El token temporal ha expirado. Inicia sesión nuevamente.'
+        'El token temporal ha expirado. Inicia sesión nuevamente.',
+        { messageKey: 'errors.TEMP_TOKEN_EXPIRED' }
       );
     }
 
-    throw new ApiError(401, 'TOKEN_INVALID', 'El token temporal no es válido.');
+    throw new ApiError(401, 'TOKEN_INVALID', 'El token temporal no es válido.', {
+      messageKey: 'errors.TEMP_TOKEN_INVALID'
+    });
   }
 
   // Confirma que el token corresponda al paso pendiente de 2FA
@@ -125,14 +133,17 @@ const verify2FA = async ({ tempToken, code }) => {
     throw new ApiError(
       401,
       'TOKEN_INVALID',
-      'El token proporcionado no corresponde a un inicio de sesión pendiente de 2FA.'
+      'El token proporcionado no corresponde a un inicio de sesión pendiente de 2FA.',
+      { messageKey: 'errors.TOKEN_NOT_2FA_PENDING' }
     );
   }
 
   const user = authStore.findUserById(payload.sub);
 
   if (!user) {
-    throw new ApiError(401, 'TOKEN_INVALID', 'El usuario asociado al token no existe.');
+    throw new ApiError(401, 'TOKEN_INVALID', 'El usuario asociado al token no existe.', {
+      messageKey: 'errors.TOKEN_USER_NOT_FOUND'
+    });
   }
 
   const storedOtp = authStore.getTwoFactorCode(user.id);
@@ -142,7 +153,8 @@ const verify2FA = async ({ tempToken, code }) => {
     throw new ApiError(
       401,
       'INVALID_2FA_CODE',
-      'El código 2FA es inválido o ya fue utilizado.'
+      'El código 2FA es inválido o ya fue utilizado.',
+      { messageKey: 'errors.INVALID_2FA_CODE_OR_USED' }
     );
   }
 
@@ -152,13 +164,16 @@ const verify2FA = async ({ tempToken, code }) => {
     throw new ApiError(
       401,
       'EXPIRED_2FA_CODE',
-      'El código 2FA ha expirado. Inicia sesión nuevamente para generar uno nuevo.'
+      'El código 2FA ha expirado. Inicia sesión nuevamente para generar uno nuevo.',
+      { messageKey: 'errors.EXPIRED_2FA_CODE' }
     );
   }
 
   // Compara el código ingresado contra el almacenado en memoria
   if (storedOtp.code !== code) {
-    throw new ApiError(401, 'INVALID_2FA_CODE', 'El código 2FA es incorrecto.');
+    throw new ApiError(401, 'INVALID_2FA_CODE', 'El código 2FA es incorrecto.', {
+      messageKey: 'errors.INVALID_2FA_CODE'
+    });
   }
 
   // Elimina el código de memoria de inmediato para garantizar un solo uso

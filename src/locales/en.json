@@ -1,0 +1,76 @@
+{
+  "health": {
+    "ok": "EventHub API is up and running."
+  },
+  "auth": {
+    "registerSuccess": "User registered successfully.",
+    "loginSuccess": "Valid credentials. Verify the 2FA code to obtain your access token.",
+    "verify2faSuccess": "Two-factor authentication completed successfully."
+  },
+  "events": {
+    "statusUpdated": "Event status was successfully updated to '{{estado}}'."
+  },
+  "errors": {
+    "INTERNAL_SERVER_ERROR": "An internal server error occurred.",
+    "VALIDATION_ERROR": "Validation error in the submitted data.",
+    "INVALID_JSON": "The request body contains invalid JSON.",
+    "ROUTE_NOT_FOUND": "Route {{method}} {{path}} was not found.",
+    "RATE_LIMIT_EXCEEDED": "You have exceeded the maximum number of requests per minute. Please try again later.",
+    "RATE_LIMIT_GLOBAL": "You have exceeded the maximum number of requests per minute. Please try again later.",
+    "RATE_LIMIT_AUTH": "Too many authentication attempts. Please wait a minute before trying again.",
+    "TOKEN_MISSING": "An access token is required in the Authorization (Bearer) header.",
+    "TOKEN_EMPTY": "The access token cannot be empty.",
+    "TOKEN_EXPIRED": "The access token has expired. Please log in again.",
+    "TOKEN_INVALID": "The access token is invalid.",
+    "TOKEN_NOT_ACCESS": "The provided token is not a valid access token. Complete 2FA verification first.",
+    "TEMP_TOKEN_EXPIRED": "The temporary token has expired. Please log in again.",
+    "TEMP_TOKEN_INVALID": "The temporary token is invalid.",
+    "TOKEN_NOT_2FA_PENDING": "The provided token does not correspond to a pending 2FA login.",
+    "TOKEN_USER_NOT_FOUND": "The user associated with the token does not exist.",
+    "USER_ALREADY_EXISTS": "An account with this email address already exists.",
+    "INVALID_CREDENTIALS": "Invalid email or password.",
+    "INVALID_2FA_CODE": "The 2FA code is incorrect.",
+    "INVALID_2FA_CODE_OR_USED": "The 2FA code is invalid or has already been used.",
+    "EXPIRED_2FA_CODE": "The 2FA code has expired. Log in again to generate a new one.",
+    "SPEAKER_NOT_FOUND": "Speaker not found.",
+    "DUPLICATE_EMAIL": "The email address is already registered.",
+    "SPEAKER_HAS_EVENTS": "The speaker cannot be deleted because they have associated events.",
+    "EVENT_NOT_FOUND": "Event not found.",
+    "EVENT_NOT_EDITABLE": "A closed or cancelled event cannot be edited.",
+    "EVENT_NOT_DELETABLE": "Only events in draft (borrador) status can be deleted.",
+    "INVALID_STATUS_TRANSITION": "The requested status transition is not allowed for this event.",
+    "ATTENDEE_NOT_FOUND": "Attendee not found.",
+    "DUPLICATE_MATRICULA": "The student ID (matricula) is already registered."
+  },
+  "validation": {
+    "auth": {
+      "nombreRequired": "The nombre field is required.",
+      "emailInvalid": "The email field must have a valid format.",
+      "passwordMinLength": "The password field is required and must be at least 6 characters long.",
+      "loginEmailInvalid": "You must provide a valid email address.",
+      "passwordRequired": "The password field is required.",
+      "tempTokenRequired": "The tempToken field is required.",
+      "otpInvalid": "The code field is required and must be a 6-digit numeric code."
+    },
+    "speaker": {
+      "fieldsRequired": "All fields are required: nombre, email, institucion, and especialidad.",
+      "emailInvalid": "The email address format is invalid."
+    },
+    "attendee": {
+      "fieldsRequired": "All fields are required: nombre, email, matricula, and carrera.",
+      "emailInvalid": "The email address format is invalid."
+    },
+    "event": {
+      "fieldsRequired": "All fields are required: titulo, descripcion, tipo, fecha, sede, cupo, and speakerId.",
+      "invalidType": "The tipo field must be one of: conferencia, taller, or seminario.",
+      "invalidCapacity": "The cupo field must be a positive integer greater than 0.",
+      "invalidDate": "The fecha field must be a valid ISO 8601 date.",
+      "pastDate": "The event date must be in the future.",
+      "emptyPatch": "You must provide at least one valid field to update the event.",
+      "statusNotAllowedInPatch": "Event status cannot be changed here; use PATCH /api/v1/events/:id/status.",
+      "invalidStatus": "The estado field must be one of: borrador, publicado, cerrado, or cancelado.",
+      "invalidDateRange": "The 'desde' parameter cannot be later than 'hasta'.",
+      "invalidPagination": "The page and limit parameters must be positive integers."
+    }
+  }
+}

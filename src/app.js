@@ -1,5 +1,6 @@
 const express = require('express');
 const logger = require('./middlewares/logger');
+const i18n = require('./middlewares/i18n');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 const healthRoutes = require('./routes/health.routes');
@@ -12,6 +13,10 @@ const app = express();
 
 // Registra cada petición entrante con su método, ruta, estado y duración
 app.use(logger);
+
+// Resuelve el idioma por petición (?lang= o Accept-Language) antes de limitadores y rutas
+app.use(i18n);
+
 // Aplica el límite máximo de peticiones por minuto a todas las rutas de la API
 app.use('/api/v1', globalLimiter);
 

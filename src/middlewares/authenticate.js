@@ -15,7 +15,8 @@ const authenticate = (req, res, next) => {
       new ApiError(
         401,
         'TOKEN_MISSING',
-        'Se requiere un token de acceso en la cabecera Authorization (Bearer).'
+        'Se requiere un token de acceso en la cabecera Authorization (Bearer).',
+        { messageKey: 'errors.TOKEN_MISSING' }
       )
     );
   }
@@ -27,7 +28,8 @@ const authenticate = (req, res, next) => {
       new ApiError(
         401,
         'TOKEN_MISSING',
-        'El token de acceso no puede estar vacío.'
+        'El token de acceso no puede estar vacío.',
+        { messageKey: 'errors.TOKEN_EMPTY' }
       )
     );
   }
@@ -41,13 +43,16 @@ const authenticate = (req, res, next) => {
         new ApiError(
           401,
           'TOKEN_EXPIRED',
-          'El token de acceso ha expirado. Inicia sesión nuevamente.'
+          'El token de acceso ha expirado. Inicia sesión nuevamente.',
+          { messageKey: 'errors.TOKEN_EXPIRED' }
         )
       );
     }
 
     return next(
-      new ApiError(401, 'TOKEN_INVALID', 'El token de acceso no es válido.')
+      new ApiError(401, 'TOKEN_INVALID', 'El token de acceso no es válido.', {
+        messageKey: 'errors.TOKEN_INVALID'
+      })
     );
   }
 
@@ -57,7 +62,8 @@ const authenticate = (req, res, next) => {
       new ApiError(
         401,
         'TOKEN_INVALID',
-        'El token proporcionado no es un token de acceso válido. Completa la verificación 2FA.'
+        'El token proporcionado no es un token de acceso válido. Completa la verificación 2FA.',
+        { messageKey: 'errors.TOKEN_NOT_ACCESS' }
       )
     );
   }

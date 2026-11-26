@@ -5,7 +5,14 @@ const notFound = (req, res, next) => {
   const error = new ApiError(
     404,
     'ROUTE_NOT_FOUND',
-    `No se encontró la ruta ${req.method} ${req.originalUrl}`
+    `No se encontró la ruta ${req.method} ${req.originalUrl}.`,
+    {
+      messageKey: 'errors.ROUTE_NOT_FOUND',
+      params: {
+        method: req.method,
+        path: req.originalUrl
+      }
+    }
   );
 
   // Envía el error al middleware global de manejo de errores
