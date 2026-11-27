@@ -1,3 +1,4 @@
+
 {
   "health": {
     "ok": "EventHub API is up and running."
@@ -70,7 +71,9 @@
       "statusNotAllowedInPatch": "Event status cannot be changed here; use PATCH /api/v1/events/:id/status.",
       "invalidStatus": "The estado field must be one of: borrador, publicado, cerrado, or cancelado.",
       "invalidDateRange": "The 'desde' parameter cannot be later than 'hasta'.",
-      "invalidPagination": "The page and limit parameters must be positive integers."
+      "invalidPagination": "The page and limit parameters must be positive integers.",
+      "unknownFields": "The request contains fields that cannot be edited.",
+      "emptyTextFields": "Submitted text fields must not be empty."
     }
   }
 }
