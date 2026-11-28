@@ -1,3 +1,4 @@
+
 {
   "health": {
     "ok": "EventHub API operativa."
@@ -50,7 +51,7 @@
       "loginEmailInvalid": "Debes proporcionar un email válido.",
       "passwordRequired": "El campo password es obligatorio.",
       "tempTokenRequired": "El campo tempToken es obligatorio.",
-      "otpInvalid": "El campo code es obligatorio y debe ser un código numérico de 6 dígitos."
+      "otpInvalid": "El campo code es obligatorio y debe ser un código numérico de 6 díitos."
     },
     "speaker": {
       "fieldsRequired": "Todos los campos son obligatorios: nombre, email, institucion y especialidad.",
@@ -70,7 +71,9 @@
       "statusNotAllowedInPatch": "El estado del evento no puede modificarse aquí; utiliza PATCH /api/v1/events/:id/status.",
       "invalidStatus": "El campo estado debe ser uno de: borrador, publicado, cerrado o cancelado.",
       "invalidDateRange": "El parámetro 'desde' no puede ser posterior a 'hasta'.",
-      "invalidPagination": "Los parámetros page y limit deben ser números enteros positivos."
+      "invalidPagination": "Los parámetros page y limit deben ser números enteros positivos.",
+      "unknownFields": "La solicitud contiene campos que no se pueden modificar.",
+      "emptyTextFields": "Los campos de texto enviados no pueden estar vacíos."
     }
   }
 }
